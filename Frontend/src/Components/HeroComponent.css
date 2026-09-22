@@ -1,0 +1,91 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.hero-container-fullheight {
+    height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-component {
+    height: 70vh;
+    width: 70vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3rem; /* Prevents edge crowding */
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px 0 rgba(15, 15, 15, 0.06);
+
+}
+
+.leftside-herosection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.HeroImg {
+    width: 250px;
+    height: auto;
+    max-height: 50vh; /* Keeps image proportionate to container */
+    object-fit: cover;
+    border: solid 1px #0F0F0F;
+}
+
+.rightside-herosection {
+    width: 50%; /* Expanded width to give text breathing room */
+    height: 100%; /* Fit within hero-component padding */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centers content vertically */
+    gap: 1.25rem; /* Flexible gap scaling */
+}
+
+/* Typography Controls */
+.rightside-herosection h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #0F0F0F;
+    letter-spacing: 0.05em;
+}
+
+.rightside-herosection p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #525252;
+}
+
+.shopnow {
+    display: inline-block;
+    margin-top: 0.5rem;
+    text-decoration: none;
+    padding: 12px 20px;
+    background-color: #0F0F0F;
+    width: 220px;
+    text-align: center;
+    color: #FFFFFF;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.shopnow:hover {
+    background-color: #1A1A1A;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px -5px rgba(15, 15, 15, 0.3);
+}
+
+.shopnow:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px -2px rgba(15, 15, 15, 0.2);
+}

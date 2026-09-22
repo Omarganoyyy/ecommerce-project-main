@@ -1,0 +1,129 @@
+/* TrackingPage.css */
+
+/* ==========================================================================
+   Page Layout & Container
+   ========================================================================== */
+.tracking-page {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: #0f0f0f;
+}
+
+.order-tracking {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* ==========================================================================
+   Navigation Link
+   ========================================================================== */
+.back-to-orders-link {
+  display: inline-block;
+  color: #2563eb;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+  transition: color 0.15s ease;
+}
+
+.back-to-orders-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Order Details & Header Info
+   ========================================================================== */
+.delivery-date {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f0f0f;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.product-info {
+  font-size: 0.95rem;
+  color: #475569;
+  margin-bottom: 0.35rem;
+}
+
+.product-image {
+  max-width: 160px;
+  max-height: 160px;
+  object-fit: contain;
+  margin: 1.5rem 0 2rem 0;
+  display: block;
+}
+
+/* ==========================================================================
+   Progress Bar & Labels
+   ========================================================================== */
+.progress-labels-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.progress-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #94a3b8;
+  flex: 1;
+  text-align: center;
+}
+
+.progress-label:first-child {
+  text-align: left;
+}
+
+.progress-label:last-child {
+  text-align: right;
+}
+
+.progress-label.current-status {
+  color: #16a34a;
+  font-weight: 700;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Positioned at 50% width to represent "Shipped" status */
+.progress-bar {
+  width: 50%;
+  height: 100%;
+  background-color: #16a34a;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+/* ==========================================================================
+   Responsive Rules
+   ========================================================================== */
+@media (max-width: 640px) {
+  .order-tracking {
+    padding: 1.5rem;
+  }
+
+  .delivery-date {
+    font-size: 1.25rem;
+  }
+
+  .progress-label {
+    font-size: 0.75rem;
+  }
+}

@@ -1,0 +1,114 @@
+/* Color Palette Variables */
+:root {
+  --bg-primary: #E5E4E0;
+  --bg-secondary: #F4F3EF;
+  --text-primary: #0F0F0F;
+  --text-muted: #525252;
+  --color-white: #FFFFFF;
+}
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 3rem;
+  background-color: #DEDEDE;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  user-select: none;
+  border-bottom: 1px solid #0F0F0F;
+  height: 10vh;
+}
+
+
+
+/* Layout Sections */
+.leftside,
+.rightside {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  flex: 1;
+}
+
+.leftside {
+  justify-content: flex-start;
+}
+
+.rightside {
+  justify-content: flex-end;
+}
+
+.middle {
+  text-align: center;
+}
+
+/* Link Styling */
+.navbar-container a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.navbar-container a:hover {
+  opacity: 0.65;
+}
+
+.navbar-container a:active {
+  transform: scale(0.98);
+}
+
+/* Lucide Icon Sizing */
+.navbar-container svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.75px;
+  color: var(--text-primary);
+}
+
+/* Text / Typography */
+.navbar-container p {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+}
+
+/* Brand Logo (LURA) */
+.middle h2 {
+  font-family: 'Plus Jakarta Sans', sans-serif; /* Replace with 'Syne' if using display font */
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--text-primary);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+/* Responsive Rules for Mobile */
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 1rem 1.5rem;
+  }
+
+  .leftside,
+  .rightside {
+    gap: 1rem;
+  }
+
+  .navbar-container p {
+    display: none; /* Shows only icons on small screens */
+  }
+
+  .middle h2 {
+    font-size: 1.35rem;
+  }
+}
