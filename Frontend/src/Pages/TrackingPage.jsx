@@ -5,7 +5,6 @@ import { NavBar } from '../Components/NavBar'
 export function TrackingPage() {
     return (
         <>
-            {/* omar gano 2 */}
             <NavBar/>
 
             <div className="tracking-page">
