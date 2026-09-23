@@ -13,7 +13,7 @@ export function NavBar() {
           </Link>
         </div>
         <div className="second-logo">
-          <Link>
+          <Link to='/search'>
             <Search />
             <p>SEACRH</p>
           </Link>
