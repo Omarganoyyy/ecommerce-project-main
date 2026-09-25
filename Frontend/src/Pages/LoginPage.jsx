@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './AuthPages.css';
+import { NavBar } from '../Components/NavBar';
 
 export function LoginPage({ onLogin }) {
     const navigate = useNavigate();
@@ -36,6 +37,8 @@ export function LoginPage({ onLogin }) {
     };
 
     return (
+        <>
+        <NavBar/>
         <div className="auth-page">
             <div className="auth-card">
                 <div className="auth-visual">
@@ -111,5 +114,6 @@ export function LoginPage({ onLogin }) {
                 </div>
             </div>
         </div>
+        </>
     );
 }

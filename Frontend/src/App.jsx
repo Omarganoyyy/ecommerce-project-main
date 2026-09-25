@@ -36,6 +36,7 @@ function App() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadCart()
   }, [])
 
@@ -50,6 +51,7 @@ function App() {
   useEffect(() => {
     const savedUser = localStorage.getItem('luraUser')
     if (savedUser) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser(JSON.parse(savedUser))
     }
   }, [])

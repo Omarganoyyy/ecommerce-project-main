@@ -231,6 +231,14 @@
   transform: scale(0.98);
 }
 
+.update-quantity-link , .delete-quantity-link{
+  background-color: #0f0f0f;
+  color: white;
+  border-radius: 8px;
+  padding: 3px;
+  border: 0px;
+}
+
 /* ==========================================================================
    Responsive Rules
    ========================================================================== */
