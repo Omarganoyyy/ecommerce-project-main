@@ -7,38 +7,64 @@ import { CheckOutPage } from './Pages/CheckOutPage'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { SearchPage } from './Pages/SearchPage'
+import { LoginPage } from './Pages/LoginPage'
+import { SignupPage } from './Pages/SignupPage'
+import { ProfilePage } from './Pages/ProfilePage'
 
 function App() {
-
   const [cart, setCart] = useState([])
+  const [products, setProducts] = useState([])
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('luraUser')
+    return savedUser ? JSON.parse(savedUser) : null
+  })
+
+  const loadCart = async () => {
+    const token = localStorage.getItem('luraToken')
+    if (!token) {
+      setCart([])
+      return
+    }
+
+    const response = await axios.get('http://localhost:3000/api/cart-items?expand=product', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    setCart(response.data)
+  }
 
   useEffect(() => {
-    const getCartData = async () => {
-      const response = await axios.get("http://localhost:3000/api/cart-items?expand=product")
-
-      setCart(response.data)
-    }
-    getCartData()
+    loadCart()
   }, [])
-
-  const [products, setProducts] = useState([])
 
   useEffect(() => {
     const getProductsData = async () => {
-      const response = await axios.get("http://localhost:3000/api/products")
+      const response = await axios.get('http://localhost:3000/api/products')
       setProducts(response.data)
     }
     getProductsData()
   }, [])
 
+  useEffect(() => {
+    const savedUser = localStorage.getItem('luraUser')
+    if (savedUser) {
+      setUser(JSON.parse(savedUser))
+    }
+  }, [])
+
 
   return (
     <Routes>
-      <Route path='/' element={<HomePage products={products} />}></Route>
-      <Route path='/orders' element={<OrdersPage cart={cart} />}></Route>
-      <Route path='/tracking' element={<TrackingPage />}></Route>
-      <Route path='/checkout' element={<CheckOutPage cart={cart} />}></Route>
-      <Route path='/search' element={<SearchPage products={products} />}></Route>
+      <Route path='/' element={<HomePage products={products} loadCart={loadCart} user={user} />}></Route>
+      <Route path='/orders' element={<OrdersPage user={user} />}></Route>
+      <Route path='/tracking/:orderId?' element={<TrackingPage user={user} />}></Route>
+      <Route path='/checkout' element={<CheckOutPage cart={cart} loadCart={loadCart} user={user} />}></Route>
+      <Route path='/search' element={<SearchPage products={products} loadCart={loadCart} user={user} />}></Route>
+      <Route path='/login' element={<LoginPage onLogin={setUser} />} />
+      <Route path='/signup' element={<SignupPage onLogin={setUser} />} />
+      <Route path='/profile' element={<ProfilePage user={user} onLogout={setUser}/>} />
     </Routes>
   )
 }

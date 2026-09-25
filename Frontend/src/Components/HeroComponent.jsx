@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import './HeroComponent.css'
 
-export function HeroComponent({handleScroll}) {
+export function HeroComponent({handleScroll,targetHeroRef}) {
     return (
 
-        <div className="hero-container-fullheight">
+        <div ref={targetHeroRef} className="hero-container-fullheight">
             <div className="hero-component">
                 <div className="leftside-herosection">
                     <img className="HeroImg" src="Balenciaga.jpg"></img>

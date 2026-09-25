@@ -3,52 +3,100 @@ import { NavBar } from '../Components/NavBar';
 import './CheckOutPage.css';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
 
-export function CheckOutPage({ cart }) {
+export function CheckOutPage({ cart, loadCart, user }) {
   const [deliveryOptions, setDeliveryOptions] = useState([]);
   const [paymentSummary, setPaymentSummary] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const fetchCheckoutData = async () => {
+    try {
+      const [deliveryRes, summaryRes] = await Promise.all([
+        axios.get('http://localhost:3000/api/delivery-options?expand=estimatedDeliveryTime'),
+        axios.get('http://localhost:3000/api/payment-summary')
+      ]);
+
+      setDeliveryOptions(deliveryRes.data);
+      setPaymentSummary(summaryRes.data);
+    } catch (error) {
+      console.error('Error fetching checkout data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function fetchCheckoutData() {
-      try {
-        setIsLoading(true);
-
-        // Fetch both API endpoints concurrently using async/await
-        const [deliveryRes, summaryRes] = await Promise.all([
-          axios.get('http://localhost:3000/api/delivery-options?expand=estimatedDeliveryTime'),
-          axios.get('http://localhost:3000/api/payment-summary')
-        ]);
-
-        setDeliveryOptions(deliveryRes.data);
-        setPaymentSummary(summaryRes.data);
-      } catch (error) {
-        console.error('Error fetching checkout data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
     fetchCheckoutData();
   }, []);
+
+  const handleDeliveryOptionChange = async (productId, deliveryOptionId) => {
+    try {
+      await axios.put(`http://localhost:3000/api/cart-items/${productId}`, {
+        deliveryOptionId: deliveryOptionId
+      });
+
+      if (loadCart) await loadCart();
+      await fetchCheckoutData();
+    } catch (error) {
+      console.error('Failed to update delivery option:', error);
+    }
+  };
+
+  const handleQuantityChange = async (productId, nextQuantity) => {
+    if (nextQuantity < 1) {
+      return handleDeleteItem(productId);
+    }
+
+    try {
+      await axios.put(`http://localhost:3000/api/cart-items/${productId}`, {
+        quantity: nextQuantity
+      });
+
+      if (loadCart) await loadCart();
+      await fetchCheckoutData();
+    } catch (error) {
+      console.error('Failed to update quantity:', error);
+    }
+  };
+
+  const handleDeleteItem = async (productId) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/cart-items/${productId}`);
+      if (loadCart) await loadCart();
+      await fetchCheckoutData();
+    } catch (error) {
+      console.error('Failed to remove cart item:', error);
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    try {
+      await axios.post('http://localhost:3000/api/orders');
+      if (loadCart) await loadCart();
+      navigate('/orders');
+    } catch (error) {
+      console.error('Failed to place order:', error);
+    }
+  };
 
   if (isLoading || !paymentSummary) {
     return (
       <>
-        <NavBar />
+        <NavBar user={user} />
         <div className="checkout-page">Loading checkout details...</div>
       </>
     );
   }
 
-  // Calculate tax percentage dynamically (e.g., 10%)
   const taxPercentage = paymentSummary.totalCostBeforeTaxCents > 0
     ? ((paymentSummary.taxCents / paymentSummary.totalCostBeforeTaxCents) * 100).toFixed(0)
     : 10;
 
   return (
     <>
-      <NavBar />
+      <NavBar user={user} />
       <div className="checkout-page">
         <div className="page-title">Review your order</div>
 
@@ -60,7 +108,7 @@ export function CheckOutPage({ cart }) {
               );
 
               return (
-                <div key={item.id} className="cart-item-container">
+                <div key={item.id || item.productId} className="cart-item-container">
                   <div className="delivery-date">
                     Delivery date:{' '}
                     {selectDeliveryOption
@@ -84,8 +132,20 @@ export function CheckOutPage({ cart }) {
                         <span>
                           Quantity: <span className="quantity-label">{item.quantity}</span>
                         </span>
-                        <span className="update-quantity-link link-primary">Update</span>
-                        <span className="delete-quantity-link link-primary">Delete</span>
+                        <button
+                          type="button"
+                          className="update-quantity-link link-primary"
+                          onClick={() => handleQuantityChange(item.productId, item.quantity - 1)}
+                        >
+                          Remove one
+                        </button>
+                        <button
+                          type="button"
+                          className="delete-quantity-link link-primary"
+                          onClick={() => handleDeleteItem(item.productId)}
+                        >
+                          Delete
+                        </button>
                       </div>
                     </div>
 
@@ -93,13 +153,17 @@ export function CheckOutPage({ cart }) {
                       <div className="delivery-options-title">Choose a delivery option:</div>
 
                       {deliveryOptions.map((option) => (
-                        <div key={option.id} className="delivery-option">
+                        <div
+                          key={option.id}
+                          className="delivery-option"
+                          onClick={() => handleDeliveryOptionChange(item.productId || item.id, option.id)}
+                        >
                           <input
                             type="radio"
                             checked={option.id === item.deliveryOptionId}
+                            onChange={() => handleDeliveryOptionChange(item.productId || item.id, option.id)}
                             className="delivery-option-input"
                             name={`delivery-option-${item.productId || item.id}`}
-                            readOnly
                           />
                           <div>
                             <div className="delivery-option-date">
@@ -158,7 +222,7 @@ export function CheckOutPage({ cart }) {
               </div>
             </div>
 
-            <button className="place-order-button button-primary">Place your order</button>
+            <button className="place-order-button button-primary" onClick={handlePlaceOrder}>Place your order</button>
           </div>
         </div>
       </div>

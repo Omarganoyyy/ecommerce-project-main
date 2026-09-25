@@ -1,30 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { NavBar } from "../Components/NavBar";
 import { ProductsListComponent } from "../Components/ProductsListComponent";
 import { SearchBarComponent } from "../Components/SearchBarComponent";
 
-export function SearchPage({ products }) {
+export function SearchPage({ products, loadCart, user }) {
 
     const [searchInput, setSearchInput] = useState("")
-    console.log(searchInput)
+    const [filteredProducts, setFilteredProducts] = useState(products)
+
+    useEffect(() => {
+        const searchTerm = searchInput.trim()
+
+        if (!searchTerm) {
+            setFilteredProducts(products)
+            return
+        }
+
+        const getFilteredProducts = async () => {
+            try {
+                const response = await axios.get(`http://localhost:3000/api/products?search=${encodeURIComponent(searchTerm)}`)
+                setFilteredProducts(response.data)
+            } catch (error) {
+                console.error('Error searching products:', error)
+                setFilteredProducts([])
+            }
+        }
+
+        getFilteredProducts()
+    }, [searchInput, products])
 
     function handleSearchInput(e) {
         return setSearchInput(e.target.value)
     }
 
-
-    const filteredProducts = products.filter((product) => {
-        const matchingName = product.name.toLowerCase().includes(searchInput.toLowerCase())
-        const matchingKey = product.keywords.some((keyword) => keyword.toLowerCase().includes(searchInput.toLowerCase()))
-   
-        return matchingName || matchingKey
-    })
-    
     return (
         <>
-            <NavBar />
+            <NavBar user={user} />
             <SearchBarComponent handleSearchInput={handleSearchInput} products={products} />
-            <ProductsListComponent filteredProducts={filteredProducts} />
+            <ProductsListComponent filteredProducts={filteredProducts} loadCart={loadCart} />
         </>
     )
 }

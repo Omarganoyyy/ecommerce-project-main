@@ -1,27 +1,31 @@
 import { Link } from 'react-router-dom'
 import './NavBar.css'
 import { ListOrdered, Search, ShoppingCart, UserRound } from 'lucide-react'
-//order cart
-export function NavBar() {
+
+export function NavBar({ handleScrollToHero, user }) {
+  const profileLink = user ? '/profile' : '/login'
+    const userLabel = user ? `${user.firstName.toUpperCase()}` : 'LOGIN'
+
+
   return (
     <div className="navbar-container">
       <div className="leftside">
         <div className="first-logo">
-          <Link>
+          <Link to={profileLink}>
             <UserRound />
-            <p>LOGIN</p>
+            <p>{userLabel}</p>
           </Link>
         </div>
         <div className="second-logo">
           <Link to='/search'>
             <Search />
-            <p>SEACRH</p>
+            <p>SEARCH</p>
           </Link>
         </div>
       </div>
 
       <div className="middle">
-        <Link to='/'>
+        <Link to='/' onClick={handleScrollToHero}>
           <h2>LURA</h2>
         </Link>
       </div>

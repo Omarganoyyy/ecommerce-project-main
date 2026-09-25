@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { sequelize } from './models/index.js';
 import productRoutes from './routes/products.js';
@@ -13,10 +14,12 @@ import { Product } from './models/Product.js';
 import { DeliveryOption } from './models/DeliveryOption.js';
 import { CartItem } from './models/CartItem.js';
 import { Order } from './models/Order.js';
+import { User } from './models/User.js';
 import { defaultProducts } from './defaultData/defaultProducts.js';
 import { defaultDeliveryOptions } from './defaultData/defaultDeliveryOptions.js';
 import { defaultCart } from './defaultData/defaultCart.js';
 import { defaultOrders } from './defaultData/defaultOrders.js';
+import userRoutes from './routes/users.js';
 import fs from 'fs';
 
 const app = express();
@@ -38,6 +41,7 @@ app.use('/api/cart-items', cartItemRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reset', resetRoutes);
 app.use('/api/payment-summary', paymentSummaryRoutes);
+app.use('/api/auth', userRoutes);
 
 // Serve static files from the dist folder
 app.use(express.static(path.join(__dirname, 'dist')));
@@ -97,6 +101,16 @@ if (productCount === 0) {
   await Order.bulkCreate(ordersWithTimestamps);
 
   console.log('Default data added to the database.');
+}
+
+const userCount = await User.count();
+if (userCount === 0) {
+  await User.create({
+    firstName: 'Demo',
+    lastName: 'User',
+    email: 'demo@lura.com',
+    passwordHash: crypto.createHash('sha256').update('demo1234').digest('hex')
+  });
 }
 
 // Start server

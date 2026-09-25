@@ -5,23 +5,36 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import dayjs from 'dayjs'
 
-export function OrdersPage() {
+export function OrdersPage({ user }) {
 
     const [orders, setOrders] = useState([])
 
     useEffect(() => {
         const getOrdersData = async () => {
-            const response = await axios.get("http://localhost:3000/api/orders?expand=products")
-
-            setOrders(response.data)
-
+            try {
+                const response = await axios.get("http://localhost:3000/api/orders?expand=products")
+                setOrders(response.data)
+            } catch (error) {
+                console.error('Error fetching orders:', error)
+            }
         }
         getOrdersData()
     }, [])
 
+    const handleAddToCart = async (productId, quantity) => {
+        try {
+            await axios.post("http://localhost:3000/api/cart-items", {
+                productId,
+                quantity
+            })
+        } catch (error) {
+            console.error('Error adding product back to cart:', error)
+        }
+    }
+
     return (
         <>
-            <NavBar />
+            <NavBar user={user} />
 
             <div className="orders-page">
                 <div className="page-title">Your Orders</div>
@@ -50,15 +63,15 @@ export function OrdersPage() {
                             </div>
 
                             {order.products?.map((product) => (
-                                <div key={product.product.productId} className="order-details-grid">
+                                <div key={`${order.id}-${product.productId}`} className="order-details-grid">
 
                                     <div className="product-image-container">
-                                        <img src={product.product.image} alt={product.name} />
+                                        <img src={product.product?.image} alt={product.product?.name || 'Product'} />
                                     </div>
 
                                     <div className="product-details">
                                         <div className="product-name">
-                                            {product.product.name}
+                                            {product.product?.name}
                                         </div>
                                         <div className="product-delivery-date">
                                             Arriving on: {dayjs(product.estimatedDeliveryTimeMs).format('MMMM D')}
@@ -66,14 +79,17 @@ export function OrdersPage() {
                                         <div className="product-quantity">
                                             Quantity: {product.quantity}
                                         </div>
-                                        <button className="buy-again-button button-primary">
+                                        <button
+                                            className="buy-again-button button-primary"
+                                            onClick={() => handleAddToCart(product.productId, product.quantity)}
+                                        >
                                             <img className="buy-again-icon" src="images/icons/buy-again.png" alt="Buy again" />
                                             <span className="buy-again-message">Add to Cart</span>
                                         </button>
                                     </div>
 
                                     <div className="product-actions">
-                                        <Link to="/tracking">
+                                        <Link to={`/tracking?orderId=${encodeURIComponent(order.id)}`}>
                                             <button className="track-package-button button-secondary">
                                                 Track package
                                             </button>
